@@ -36,7 +36,7 @@ enemyX_change = []
 enemyY_change = []
 num_of_enemies = 6
 
-for i in range(num_of_enemies):
+for _ in range(num_of_enemies):
     enemyImg.append(pygame.image.load('enemy.png'))
     enemyX.append(random.randint(0, 736))
     enemyY.append(random.randint(50, 150))
@@ -68,7 +68,7 @@ over_font = pygame.font.Font('freesansbold.ttf', 64)
 
 
 def show_score(x, y):
-    score = font.render("Score : " + str(score_value), True, (255, 255, 255))
+    score = font.render(f"Score : {str(score_value)}", True, (255, 255, 255))
     screen.blit(score, (x, y))
 
 
@@ -94,10 +94,7 @@ def fire_bullet(x, y):
 def isCollision(enemyX, enemyY, bulletX, bulletY):
     distance = math.sqrt(math.pow(enemyX - bulletX, 2) +
                          (math.pow(enemyY - bulletY, 2)))
-    if distance < 27:
-        return True
-    else:
-        return False
+    return distance < 27
 
 
 # Game Loop
@@ -127,7 +124,7 @@ while running:
                     fire_bullet(bulletX, bulletY)
 
         if event.type == pygame.KEYUP:
-            if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+            if event.key in [pygame.K_LEFT, pygame.K_RIGHT]:
                 playerX_change = 0
 
     # 5 = 5 + -0.1 -> 5 = 5 - 0.1
@@ -157,9 +154,7 @@ while running:
             enemyX_change[i] = -4
             enemyY[i] += enemyY_change[i]
 
-        # Collision
-        collision = isCollision(enemyX[i], enemyY[i], bulletX, bulletY)
-        if collision:
+        if collision := isCollision(enemyX[i], enemyY[i], bulletX, bulletY):
             explosionSound = mixer.Sound("explosion.wav")
             explosionSound.play()
             bulletY = 480
